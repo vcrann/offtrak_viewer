@@ -5,7 +5,8 @@ class TrackerState {
   int _lastUpdate = 0; // time of last update in ms since unix epoch
   int _batteryLevel = 0;
   LatLng _latLng = const LatLng(0, 0);
-  TrackerState(this._id);
+  //TrackerState(this._id);
+  TrackerState(this._id, this._latLng);
 
   void setLastUpdate() {
     _lastUpdate = DateTime.now().millisecondsSinceEpoch;
@@ -15,7 +16,7 @@ class TrackerState {
     _batteryLevel = batteryLevel;
   }
 
-  void setGeodetic(LatLng latLng, double absoluteAltitude) {
+  void setLatLng(LatLng latLng) {
     _latLng = latLng;
   }
 

@@ -22,9 +22,7 @@ class MapView extends StatefulWidget {
 
 class _MapViewState extends State<MapView> {
   final controller = MapController(
-    //location: LatLng(53.43578053111544, -2.250343561172483),
-    //location: LatLng(52.81651946850575, -4.124781265539541),
-    location: const LatLng(53.407712727422705, -2.12315514168248),
+    location: LatLng(52.81651946850575, -4.124781265539541),
   );
 
   bool _darkMode = false;
@@ -112,7 +110,7 @@ class _MapViewState extends State<MapView> {
       //     Icon(Icons.airplanemode_active, color: color),
       //   ],
       // ),
-      child: Icon(Icons.airplanemode_active, color: color, size: 15),
+      child: Icon(Icons.person, color: color, size: 15),
     );
   }
 
@@ -169,7 +167,7 @@ class _MapViewState extends State<MapView> {
                       y %= tilesInZoom;
                       //Mapbox Streets
                       final url =
-                          'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/$z/$x/$y?access_token=${mapBoxApiKey}';
+                          'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/$z/$x/$y?access_token=$mapBoxApiKey';
 
                       return CachedNetworkImage(
                         imageUrl: url,
@@ -179,7 +177,7 @@ class _MapViewState extends State<MapView> {
                   ),
                   // used to update markers at set frequency rather than as fast as updates are received
                   // increases performance
-                  TimerBuilder.periodic(const Duration(milliseconds: 1000),
+                  TimerBuilder.periodic(const Duration(milliseconds: 5000),
                       builder: (context) {
                     print("rebuilding markers");
                     var trackers = serviceLocator<TrackerManager>().trackers;
@@ -188,8 +186,8 @@ class _MapViewState extends State<MapView> {
                         _generateMarkers(trackers, transformer);
 
                     final markerWidgets = markerPositions.map(
-                      (agentMarker) =>
-                          _buildMarkerWidget(agentMarker.cartesian, Colors.red),
+                      (trackerMarker) => _buildMarkerWidget(
+                          trackerMarker.cartesian, Colors.red),
                     );
                     return Stack(
                       children: [...markerWidgets],

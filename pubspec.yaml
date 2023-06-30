@@ -42,6 +42,7 @@ dependencies:
   geolocator_linux: ^0.1.2
   get_it: ^7.2.0
   provider: ^6.0.5
+  flutter_libserialport: ^0.3.0
 
 dev_dependencies:
   flutter_test:
