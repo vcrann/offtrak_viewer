@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 //import 'package:helixio_app/pages/page_scaffold.dart';
 import 'package:offtrak_viewer/modules/core/secrets/keys.dart';
-//import 'package:helixio_app/modules/helpers/service_locator.dart';
-//import 'package:helixio_app/modules/core/models/agent_state.dart';
+import 'package:offtrak_viewer/modules/helpers/service_locator.dart';
+import 'package:offtrak_viewer/modules/core/managers/tracker_manager.dart';
+import 'package:offtrak_viewer/modules/core/models/tracker_state.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:latlng/latlng.dart';
@@ -28,18 +29,18 @@ class _MapViewState extends State<MapView> {
 
   bool _darkMode = false;
 
-  // List<AgentMarker> _generateMarkers(var swarm, MapTransformer transformer) {
-  //   List<AgentMarker> agentMarkers = [];
+  List<TrackerMarker> _generateMarkers(
+      var trackers, MapTransformer transformer) {
+    List<TrackerMarker> trackerMarkers = [];
 
-  //   if (swarm.isNotEmpty) {
-  //     Iterable<AgentState> agents = swarm.values;
-  //     for (AgentState agent in agents) {
-  //       agentMarkers.add(AgentMarker(agent.getLatLng, agent.getHeading,
-  //           transformer.toOffset(agent.getLatLng)));
-  //     }
-  //   }
-  //   return agentMarkers;
-  // }
+    if (trackers.isNotEmpty) {
+      for (TrackerState tracker in trackers) {
+        trackerMarkers.add(TrackerMarker(
+            tracker.getLatLng, transformer.toOffset(tracker.getLatLng)));
+      }
+    }
+    return trackerMarkers;
+  }
 
   void _gotoDefault() {
     controller.center = const LatLng(53.43578053111544, -2.250343561172483);
@@ -99,7 +100,7 @@ class _MapViewState extends State<MapView> {
     }
   }
 
-  Widget _buildMarkerWidget(Offset pos, double heading, Color color) {
+  Widget _buildMarkerWidget(Offset pos, Color color) {
     return Positioned(
       left: pos.dx - 16,
       top: pos.dy - 16,
@@ -111,10 +112,7 @@ class _MapViewState extends State<MapView> {
       //     Icon(Icons.airplanemode_active, color: color),
       //   ],
       // ),
-      child: Transform.rotate(
-          //convert heading in degrees to radians
-          angle: heading * (pi / 180),
-          child: Icon(Icons.airplanemode_active, color: color, size: 15)),
+      child: Icon(Icons.airplanemode_active, color: color, size: 15),
     );
   }
 
@@ -184,14 +182,14 @@ class _MapViewState extends State<MapView> {
                   TimerBuilder.periodic(const Duration(milliseconds: 1000),
                       builder: (context) {
                     print("rebuilding markers");
-                    var swarm = serviceLocator<SwarmManager>().swarm;
+                    var trackers = serviceLocator<TrackerManager>().trackers;
 
                     final markerPositions =
-                        _generateMarkers(swarm, transformer);
+                        _generateMarkers(trackers, transformer);
 
                     final markerWidgets = markerPositions.map(
-                      (agentMarker) => _buildMarkerWidget(agentMarker.cartesian,
-                          agentMarker.heading, Colors.red),
+                      (agentMarker) =>
+                          _buildMarkerWidget(agentMarker.cartesian, Colors.red),
                     );
                     return Stack(
                       children: [...markerWidgets],
@@ -227,14 +225,9 @@ class _MapViewState extends State<MapView> {
 }
 
 // Defines marker object containing position and heading
-class AgentMarker {
+class TrackerMarker {
   final LatLng latLng;
-  final double heading;
   final Offset cartesian;
 
-  AgentMarker(this.latLng, this.heading, this.cartesian);
-
-  // LatLng get getLatLng => _latLng;
-  // double get getHeading => _heading;
-  // Offset get getCartesian => _cartesian;
+  TrackerMarker(this.latLng, this.cartesian);
 }
