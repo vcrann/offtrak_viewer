@@ -5,6 +5,7 @@ import 'package:offtrak_viewer/modules/helpers/service_locator.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  setupLocator();
   runApp(const MyApp());
 }
 
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
               // is not restarted.
               primarySwatch: Colors.blue,
             ),
-            home: const MapView()));
+            home: const MyHomePage(title: 'Flutter Demo Home Page')));
   }
 }
 
@@ -100,6 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            const MapView(),
             const Text(
               'You have pushed the button this many times:',
             ),
