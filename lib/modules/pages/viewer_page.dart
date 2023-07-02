@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:offtrak_viewer/modules/core/managers/tracker_manager.dart';
+import 'package:offtrak_viewer/modules/core/managers/serial_manager.dart';
 import 'package:offtrak_viewer/modules/core/widgets/map_view.dart';
 import 'package:offtrak_viewer/modules/helpers/service_locator.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
+
+List<String> bauds = <String>['9600', '57600', '115200', '921600'];
 
 class ViewerPage extends StatefulWidget {
   const ViewerPage({Key? key}) : super(key: key);
@@ -13,15 +16,15 @@ class ViewerPage extends StatefulWidget {
 }
 
 class _ViewerPageState extends State<ViewerPage> {
-  String _portDropdownValue = SerialPort.availablePorts.first;
+  //String _portDropdownValue = SerialPort.availablePorts.first;
+  String _portDropdownValue = 'No ports available';
+  final String _baudDropdownValue = bauds.first;
 
   @override
   Widget build(BuildContext context) {
-    //_mqttManager = Provider.of<MQTTManager>(context);
-    // if (_controller.hasClients) {
-    //   _controller.jumpTo(_controller.position.maxScrollExtent);
-    // }
-
+    if (SerialPort.availablePorts.isNotEmpty) {
+      _portDropdownValue = SerialPort.availablePorts.first;
+    }
     return _buildColumn();
   }
 
@@ -56,10 +59,41 @@ class _ViewerPageState extends State<ViewerPage> {
                           });
                         },
                       ),
+                      DropdownButton<String>(
+                        value: _baudDropdownValue,
+                        icon: const Icon(Icons.bar_chart_rounded),
+                        hint: const Text('Select Baud'),
+                        items:
+                            bauds.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _portDropdownValue = newValue!;
+                          });
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              SerialPort.availablePorts;
+                            });
+                          },
+                          child: const Text('Refresh'),
+                        ),
+                      ),
+
                       //ElevatedButton(onPressed: onPressed, child: const Text('Refresh')),
                       ElevatedButton(
                         onPressed: () {
-                          //Navigator.pushNamed(context, '/viewer');
+                          serviceLocator<SerialManager>().openConnection(
+                              _portDropdownValue,
+                              int.parse(_baudDropdownValue));
                         },
                         child: const Text('Connect'),
                       ),

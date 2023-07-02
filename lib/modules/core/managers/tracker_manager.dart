@@ -5,11 +5,7 @@ import 'package:latlng/latlng.dart';
 
 class TrackerManager extends ChangeNotifier {
   int numberOfTrackers = 0;
-  //List<TrackerState> trackers = [];
-  List<TrackerState> trackers = [
-    TrackerState('1', const LatLng(52.81651946850675, -4.124781265539541)),
-    TrackerState('2', const LatLng(52.81752946850675, -4.124882265539641))
-  ];
+  List<TrackerState> trackers = [];
 
   void update() {
     notifyListeners();
