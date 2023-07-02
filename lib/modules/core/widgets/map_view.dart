@@ -180,6 +180,7 @@ class _MapViewState extends State<MapView> {
                   TimerBuilder.periodic(const Duration(milliseconds: 5000),
                       builder: (context) {
                     print("rebuilding markers");
+                    serviceLocator<TrackerManager>().checkTimedOutTrackers();
                     var trackers = serviceLocator<TrackerManager>().trackers;
 
                     final markerPositions =
