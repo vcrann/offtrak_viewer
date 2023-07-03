@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:offtrak_viewer/modules/core/managers/tracker_manager.dart';
 import 'package:offtrak_viewer/modules/core/managers/serial_manager.dart';
+import 'package:offtrak_viewer/modules/core/managers/udp_manager.dart';
 import 'package:offtrak_viewer/modules/core/widgets/map_view.dart';
 import 'package:offtrak_viewer/modules/helpers/service_locator.dart';
 import 'package:offtrak_viewer/modules/pages/viewer_page.dart';
@@ -21,8 +22,10 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(
               create: (context) => serviceLocator<TrackerManager>()),
+          // ChangeNotifierProvider(
+          //     create: (context) => serviceLocator<SerialManager>()),
           ChangeNotifierProvider(
-              create: (context) => serviceLocator<SerialManager>()),
+              create: (context) => serviceLocator<UDPManager>()),
         ],
         child: MaterialApp(
             title: 'Flutter Demo',

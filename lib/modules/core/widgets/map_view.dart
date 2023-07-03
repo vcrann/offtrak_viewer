@@ -34,7 +34,9 @@ class _MapViewState extends State<MapView> {
     if (trackers.isNotEmpty) {
       for (TrackerState tracker in trackers) {
         trackerMarkers.add(TrackerMarker(
-            tracker.getLatLng, transformer.toOffset(tracker.getLatLng)));
+            tracker.getLatLng,
+            transformer.toOffset(tracker.getLatLng),
+            "ID: ${tracker.getID} \n Alt: ${tracker.getAltitude}"));
       }
     }
     return trackerMarkers;
@@ -98,25 +100,35 @@ class _MapViewState extends State<MapView> {
     }
   }
 
-  Widget _buildMarkerWidget(Offset pos, Color color) {
+  Widget _buildMarkerWidget(Offset pos, Color color, String text) {
     return Positioned(
-      left: pos.dx - 16,
-      top: pos.dy - 16,
-      width: 24,
-      height: 24,
-      // child: Row(
-      //   children: [
-      //     const Text('SXXX'),
-      //     Icon(Icons.airplanemode_active, color: color),
-      //   ],
-      // ),
-      child: Icon(Icons.person, color: color, size: 15),
-    );
+        left: pos.dx - 100,
+        top: pos.dy - 100,
+        width: 200,
+        height: 200,
+        // child: Row(
+        //   children: [
+        //     const Text('SXXX'),
+        //     Icon(Icons.airplanemode_active, color: color),
+        //   ],
+        // ),
+        child: Row(
+          children: <Widget>[
+            //Expanded(
+            //  child: Icon(Icons.person, color: color, size: 30),
+            //),
+            Expanded(
+              child: Text(text,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 20, color: Colors.white)),
+            ),
+          ],
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
-    print('drawing map');
+    //print('drawing map');
 
     return Stack(children: [
       MapLayout(
@@ -179,7 +191,7 @@ class _MapViewState extends State<MapView> {
                   // increases performance
                   TimerBuilder.periodic(const Duration(milliseconds: 5000),
                       builder: (context) {
-                    print("rebuilding markers");
+                    //print("rebuilding markers");
                     serviceLocator<TrackerManager>().checkTimedOutTrackers();
                     var trackers = serviceLocator<TrackerManager>().trackers;
 
@@ -188,7 +200,10 @@ class _MapViewState extends State<MapView> {
 
                     final markerWidgets = markerPositions.map(
                       (trackerMarker) => _buildMarkerWidget(
-                          trackerMarker.cartesian, Colors.red),
+                        trackerMarker.cartesian,
+                        Colors.red,
+                        trackerMarker.text,
+                      ),
                     );
                     return Stack(
                       children: [...markerWidgets],
@@ -227,6 +242,7 @@ class _MapViewState extends State<MapView> {
 class TrackerMarker {
   final LatLng latLng;
   final Offset cartesian;
+  final String text;
 
-  TrackerMarker(this.latLng, this.cartesian);
+  TrackerMarker(this.latLng, this.cartesian, this.text);
 }

@@ -4,18 +4,23 @@ import 'package:latlng/latlng.dart';
 
 class TrackerManager extends ChangeNotifier {
   List<TrackerState> trackers = [];
-  int timeout = 10000; // time in ms before a tracker is considered timed out
+  int timeout =
+      60 * 1000; // time in ms before a tracker is considered timed out
 
   void update() {
     notifyListeners();
   }
 
   void checkTimedOutTrackers() {
+    List<TrackerState> trackersToRemove = [];
     for (TrackerState tracker in trackers) {
       if (tracker.getLastUpdate <
           DateTime.now().millisecondsSinceEpoch - timeout) {
-        trackers.remove(tracker);
+        trackersToRemove.add(tracker);
       }
+    }
+    for (TrackerState tracker in trackersToRemove) {
+      trackers.remove(tracker);
     }
     notifyListeners();
   }
