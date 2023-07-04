@@ -37,8 +37,8 @@ class UDPManager extends ChangeNotifier {
     // 65002.
     print('UDP connection opened');
     //var receiver = await UDP.bind(Endpoint.loopback(port: Port(10101)));
-    var receiver = await UDP.bind(
-        Endpoint.unicast(InternetAddress('172.16.0.255'), port: Port(10101)));
+    var receiver = await UDP
+        .bind(Endpoint.unicast(InternetAddress('0.0.0.0'), port: Port(10101)));
 
     // receiving\listening
     receiver.asStream().listen((datagram) {
