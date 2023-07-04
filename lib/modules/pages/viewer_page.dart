@@ -98,6 +98,15 @@ class _ViewerPageState extends State<ViewerPage> {
                         },
                         child: const Text('Connect'),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Consumer<UDPManager>(
+                          builder: (context, udp, child) {
+                            return Text(
+                                'Packets Received: ${udp.messageCounter}, Last Packet From ID: ${udp.lastSeenID}');
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),

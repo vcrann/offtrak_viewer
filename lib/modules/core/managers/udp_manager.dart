@@ -8,6 +8,8 @@ import 'dart:io';
 class UDPManager extends ChangeNotifier {
   bool isConnected =
       false; // used to check if the port variable has been assigned
+  int messageCounter = 0;
+  int lastSeenID = 0;
 
   void update() {
     notifyListeners();
@@ -26,7 +28,10 @@ class UDPManager extends ChangeNotifier {
       double latitude = int.parse(dataList[3]).toDouble() / 10000000.0;
       double longitude = int.parse(dataList[4]).toDouble() / 10000000.0;
       double altitude = int.parse(dataList[5]).toDouble() / 1000.0;
-
+      messageCounter++;
+      lastSeenID = id;
+      print(messageCounter);
+      notifyListeners();
       serviceLocator<TrackerManager>().handleDataMessage(
           id, gpsTime, LatLng(latitude, longitude), altitude);
     }
